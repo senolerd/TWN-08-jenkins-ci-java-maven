@@ -17,10 +17,7 @@ pipeline {
                     sh ''' 
                         podman run --rm -v $WORKSPACE:/app -w /app ${MVN_IMG} mvn clean compile
                     '''
-                        
-                    }
                 }
-
             }
         }
 
