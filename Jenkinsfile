@@ -15,7 +15,7 @@ pipeline {
                 echo 'Compiling...'
                 script {
                     sh ''' 
-                        podman run --rm -v $WORKSPACE:/app -w /app ${MVN_IMG} mvn clean compile
+                        podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MVN_IMG} mvn clean compile
                     '''
                 }
             }
