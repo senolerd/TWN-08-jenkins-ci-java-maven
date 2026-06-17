@@ -50,12 +50,9 @@ pipeline {
                         podman build -t java-maven:v1 .
                     '''
 
+                    projectVersion = utils.getProjectVersion()
+                    echo "Project version: ${projectVersion.major}.${projectVersion.minor}.${projectVersion.patch}${projectVersion.suffix}"
 
-
-                    sh '''
-                        projectVersion = utils.getProjectVersion()
-                        echo "Project version: ${projectVersion.major}.${projectVersion.minor}.${projectVersion.patch}${projectVersion.suffix}"
-                    '''
 
                 }
             }
