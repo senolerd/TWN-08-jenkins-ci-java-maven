@@ -1,12 +1,9 @@
 def getProjectVersion() {
-
-    withEnv(["MAVEN_IMG=${MAVEN_IMG}", "JOB_NAME=${JOB_NAME}"]) {
         sh '''
             versionString=$(podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         '''
     return version
-
-
+}
 
 def incrementVersion(version, part) {
 
