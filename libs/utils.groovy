@@ -1,13 +1,18 @@
 def getProjectVersion() {
-    // This function reads pom.xml and extracts version information into a map
-    def versionString = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
-    def versionPattern = /(\d+)\.(\d+)\.(\d+)(.*)?/
-    def matcher = versionString =~ versionPattern
-    if (!matcher.matches()) {
-        error "Version string '${versionString}' does not match expected pattern 'major.minor.patch[-suffix]'"
-    }   
-
-    return versionString
+    // This function reads pom.xml and extracts version information into a map with major, minor, patch and suffix parts
+    def versionOutput = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+    def versionPattern = /(\d+)\.(\d+)\.(\d+)(.*)/
+    def matcher = versionOutput =~ versionPattern
+    if (matcher.matches()) {
+        return [
+            major: matcher[0][1],
+            minor: matcher[0][2],
+            patch: matcher[0][3],
+            suffix: matcher[0][4]
+        ]
+    } else {
+        error "Version format is invalid: ${versionOutput}" // Throw an error if version format is not as expected  
+    }
 }
 
 def incrementVersion(version, part) {
