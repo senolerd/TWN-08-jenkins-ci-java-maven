@@ -2,7 +2,7 @@ def utils
 pipeline {
     agent any
     environment {
-        # For portability, we use the Maven image to build the project and get the version from pom.xml
+        //  For portability, we use the Maven image to build the project and get the version from pom.xml
         MAVEN_IMG = 'docker.io/maven:3-eclipse-temurin-17'
         APP_VER = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
     }
