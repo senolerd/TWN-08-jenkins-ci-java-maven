@@ -1,4 +1,4 @@
-def utils
+def utils 
 pipeline {
     agent any
     environment {
@@ -11,7 +11,9 @@ pipeline {
         stage('__init__') {
             steps {
                 echo 'Initialing...'
-                utils = load 'utils.groovy'
+                script {
+                    utils = load 'utils.groovy'
+                }
             }
         }
 
