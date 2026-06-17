@@ -14,6 +14,7 @@ pipeline {
                 utils = load 'utils.groovy'
             }
         }
+
         stage('Maven Compile') {
             steps {
                 echo 'Compiling...'
@@ -62,5 +63,6 @@ pipeline {
             steps {
                 echo 'Pushing image...'
             }
+        }
     }
 }
