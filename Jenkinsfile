@@ -52,6 +52,8 @@ pipeline {
 
                     projectVersion = utils.getProjectVersion()
                     echo "Project version: ${projectVersion}"
+                    projectVersion = utils.incrementVersion()
+                    echo "UpdatedProject version: ${projectVersion}"
 
                 }
             }
