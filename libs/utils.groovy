@@ -1,7 +1,12 @@
 def getProjectVersion() {
-        sh '''
-            versionString=$(podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        '''
+    // This function reads pom.xml and extracts version information into a map
+    def versionString = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+    def versionPattern = /(\d+)\.(\d+)\.(\d+)(.*)?/
+    def matcher = versionString =~ versionPattern
+    if (!matcher.matches()) {
+        error "Version string '${versionString}' does not match expected pattern 'major.minor.patch[-suffix]'"
+    }   
+
     return versionString
 }
 
