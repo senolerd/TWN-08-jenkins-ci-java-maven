@@ -2,11 +2,12 @@ def getProjectVersion() {
 
     // This function gets project version as map with [major, minor, patch, suffix] with maven native command and regex parsing
     def version = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
-    def matcher = version =~ /(\d+)\.(\d+)\.(\d+)(-.+)?/
-    if (matcher.matches()) {
-        return [major: matcher[0][1], minor: matcher[0][2], patch: matcher[0][3], suffix: matcher[0][4]]        
-    }
-    return [major: '0', minor: '0', patch: '0', suffix: '']
+    return version
+    // def matcher = version =~ /(\d+)\.(\d+)\.(\d+)(-.+)?/
+    // if (matcher.matches()) {
+    //     return [major: matcher[0][1], minor: matcher[0][2], patch: matcher[0][3], suffix: matcher[0][4]]        
+    // }
+    // return [major: '0', minor: '0', patch: '0', suffix: '']
 }
 
 
@@ -33,7 +34,7 @@ def incrementVersion(version, part) {
 
 
 def updatePomVersion(newVersion) {
-    
+
     // This function updates pom.xml version with maven native command and new version string
     def versionString = "${newVersion.major}.${newVersion.minor}.${newVersion.patch}${newVersion.suffix ?: ''}"
     sh """
