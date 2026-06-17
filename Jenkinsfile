@@ -12,7 +12,7 @@ pipeline {
             steps {
                 echo 'Initialing...'
                 script {
-                    utils = load 'utils.groovy'
+                    utils = load 'libs/utils.groovy'
                 }
             }
         }
