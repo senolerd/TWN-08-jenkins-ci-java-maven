@@ -1,19 +1,11 @@
 def getProjectVersion() {
 
     withEnv(["MAVEN_IMG=${MAVEN_IMG}", "JOB_NAME=${JOB_NAME}"]) {
-    def version = sh(script: 'podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME $MAVEN_IMG mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
-    }
-
-    // def version = sh(script:'podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME $MAVEN_IMG mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true).trim()
-
-    
+        sh '''
+            versionString=$(podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        '''
     return version
-    // def matcher = version =~ /(\d+)\.(\d+)\.(\d+)(-.+)?/
-    // if (matcher.matches()) {
-    //     return [major: matcher[0][1], minor: matcher[0][2], patch: matcher[0][3], suffix: matcher[0][4]]        
-    // }
-    // return [major: '0', minor: '0', patch: '0', suffix: '']
-}
+
 
 
 def incrementVersion(version, part) {
