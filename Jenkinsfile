@@ -14,14 +14,7 @@ pipeline {
         BUILD_IMG = 'docker.io/library/eclipse-temurin:17-jre-jammy'
 
         APP_VER = ''
-
-        DOCKER_CREDENTIALS = [
-            usernamePassword(
-                credentialsId: 'senolerd_docker_hub',
-                usernameVariable: 'USER',
-                passwordVariable: 'PASS'
-            )
-        ]
+        DOCKER_CREDENTIAL_ID = 'senolerd_docker_hub'
     }
 
     stages {
