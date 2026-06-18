@@ -1,74 +1,56 @@
-def utils 
+def utils
 pipeline {
     agent any
     environment {
-        //  For portability, we use the Maven image to build the project and get the version from pom.xml
-        MAVEN_IMG = 'docker.io/maven:3-eclipse-temurin-17'
+
+        // For portability, Maven container is used instead installed as build tool to 
+        // build the project and get the version from pom.xml
+
+        SRC_REGISTER = "docker.io"
+        DEST_REGISTER = "docker.io"
+        DEST_REPO = "$DEST_REGISTER/senolerd"
+
+        MAVEN_IMG = "$SRC_REGISTER/maven:3-eclipse-temurin-17"
+        BUILD_IMG = 'docker.io/library/eclipse-temurin:17-jre-jammy'
+
         APP_VER = ''
+
+        DOCKER_CREDENTIALS = [
+            usernamePassword(
+                credentialsId: 'senolerd_docker_hub',
+                usernameVariable: 'USER',
+                passwordVariable: 'PASS'
+            )
+        ]
     }
 
     stages {
-        
         stage('__init__') {
             steps {
                 echo 'Initialing...'
-                script {
-                    utils = load 'libs/utils.groovy'    
-                    APP_VER = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME $MAVEN_IMG mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
-                }
-
-                echo "Current Application Version: $APP_VER in __init__ stage"
-
+                utils.__init__()
             }
         }
 
         stage('Maven Compile') {
             steps {
                 echo 'Compiling...'
-                echo "Current Application Version: $APP_VER in Compile stage"
-                script {
-
-                    sh ''' 
-                        podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn clean package --quiet
-                    '''
-                }
+                utils.codeCompile()
             }
         }
 
         stage('OCI Image Build') {
             steps {
                 echo 'Building...'
-
-                script {
-                    sh '''
-                        cd target
-                        JAR_FILE=$(ls *.jar)
-                        
-                        cat <<-'EOF' > Containerfile
-                        FROM docker.io/library/eclipse-temurin:17-jre-jammy
-                        WORKDIR /app
-                        COPY $JAR_FILE .
-                        CMD java -jar $JAR_FILE
-                    '''
-                    
-                    sh '''
-                        mv target/Containerfile .
-                        podman build -t java-maven:v1 .
-                    '''
-
-                    // def projectVersion = utils.getProjectVersion()
-                    echo "Project version: ${utils.getProjectVersion()}"
-                    utils.incrementVersion()
-                    // projectVersion = utils.getProjectVersion()
-                    echo "UpdatedProject version: ${utils.getProjectVersion()}"
-
-                }
+                utils.imageBuild()
             }
         }
 
         stage('Image Push') {
             steps {
+                
                 echo 'Pushing image...'
+                utils.imagePush()
             }
         }
     }
