@@ -21,9 +21,11 @@ pipeline {
         stage('__init__') {
             steps {
                 echo 'Initialing...'
-                script { utils = load 'libs/utils.groovy' }
+                script { 
+                    utils = load 'libs/utils.groovy' 
+                    utils.__init__()
+                }
 
-                utils.__init__()
             }
         }
 
