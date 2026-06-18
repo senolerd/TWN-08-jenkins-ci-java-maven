@@ -4,13 +4,16 @@ pipeline {
     environment {
         //  For portability, we use the Maven image to build the project and get the version from pom.xml
         MAVEN_IMG = 'docker.io/maven:3-eclipse-temurin-17'
-        // APP_VER = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+        APP_VER = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
     }
 
     stages {
+        
         stage('__init__') {
             steps {
                 echo 'Initialing...'
+                echo 'Current Application Version: ${APP_VER}'
+
                 script {
                     utils = load 'libs/utils.groovy'
                 }
