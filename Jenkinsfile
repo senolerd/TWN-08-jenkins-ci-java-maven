@@ -25,29 +25,33 @@ pipeline {
                     utils = load 'libs/utils.groovy' 
                     utils.__init__()
                 }
-
             }
         }
 
         stage('Maven Compile') {
             steps {
                 echo 'Compiling...'
-                utils.codeCompile()
+                script {
+                    utils.codeCompile()
+                }
             }
         }
 
         stage('OCI Image Build') {
             steps {
                 echo 'Building...'
-                utils.imageBuild()
+                script {
+                    utils.imageBuild()
+                }
             }
         }
 
         stage('Image Push') {
             steps {
-                
                 echo 'Pushing image...'
-                utils.imagePush()
+                script {
+                    utils.imagePush()
+                }
             }
         }
     }
