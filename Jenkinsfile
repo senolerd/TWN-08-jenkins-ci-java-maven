@@ -11,13 +11,14 @@ pipeline {
         stage('__init__') {
             steps {
                 echo 'Initialing...'
-                def APP_VER = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
-
-                echo "Current Application Version: $APP_VE in __init__ stage"
 
                 script {
                     utils = load 'libs/utils.groovy'
+                    def APP_VER = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
                 }
+                
+                echo "Current Application Version: $APP_VE in __init__ stage"
+
             }
         }
 
