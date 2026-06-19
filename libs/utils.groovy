@@ -15,7 +15,7 @@ def __init__() {
     }
 
 def codeCompile() {
-    echo 'Compile the code...'
+    echo "Compiling the code... for ${APP_VER}"
     sh '''
         podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn clean package --quiet
     '''
@@ -23,7 +23,7 @@ def codeCompile() {
 
 def imagePush() {
     // Logged in with secure concerns with single quote (or triple quote) to prevent interpolation of env vars in credentials.
-    
+
     withCredentials([usernamePassword(credentialsId: ${DOCKER_CREDENTIAL_ID}, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
         sh '''
             podman login -u $USER -p $PASS $DEST_REGISTER
