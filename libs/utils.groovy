@@ -1,39 +1,39 @@
-def getProjectVersion() {
+String getProjectVersion() {
     // Get version via build-helper plugin which parses version into parts and allows to easily increment them if needed
     return sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME $MAVEN_IMG mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
     }
 
-def incrementVersion() {
+void incrementVersion() {
     sh '''
         podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME $MAVEN_IMG mvn build-helper:parse-version versions:set -q -DnewVersion='\$'{parsedVersion.majorVersion}.'\$'{parsedVersion.nextMinorVersion}.0-SNAPSHOT versions:commit
     '''
     }
 
-def __init__() {
+void __init__() {
     echo 'JSL Initialing...'
     APP_VER = sh(script:"podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME $MAVEN_IMG mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
     }
 
-def codeCompile() {
+void codeCompile() {
     echo "Compiling the code... for ${APP_VER}"
-    sh '''
+    sh """
         podman run --rm -v jenkins_home:/app -w /app/workspace/$JOB_NAME ${MAVEN_IMG} mvn clean package --quiet
-    '''
+    """
     }
 
-def imagePush() {
-    // Logged in with secure concerns with single quote (or triple quote) to prevent interpolation of env vars in credentials.
+void imagePush() {
+    // Logged in with secure concerns with single quote (or triple quote) to 
+    // prevent interpolation of env vars in credentials.
 
-    withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIAL_ID, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-        
-        sh """
-        podman login -u $USER -p $PASS $DEST_REGISTER
-        podman push $DEST_REPO/java-maven:$APP_VER
-        """
+    withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIAL_ID, 
+                                      usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+        sh 'podman login -u $USER -p $PASS $DEST_REGISTER'
+        sh "podman push $DEST_REPO/java-maven:$APP_VER"
         }
+    _updateApplicationVersion() // Affer the image pushed successfully update codebase version to next minor with -SNAPSHOT
     }
 
-def imageBuild() {
+void imageBuild() {
     sh '''
         cd target
         JAR_FILE=$(ls *.jar)
@@ -51,5 +51,16 @@ def imageBuild() {
         mv Containerfile ../
     """
     }
+
+void _updateApplicationVersion(){ 
+    // I preffer to add agent's public key to github if the agent not ephemeral
+    incrementVersion()
+    // git config user.name "Jenkins Build Bot"
+    // git config user.email "jenkins@local"
+    // git add pom.xml
+    // git commit -m "Updating app version to -SNAPSHOT with next minor"
+    // git push
+}
+
 
 return this
