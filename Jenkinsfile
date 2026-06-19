@@ -38,6 +38,8 @@ pipeline {
         }
 
         stage('OCI Image Build') {
+            when { APP_VER.endsWith("-SNAPSHOT") == false }
+            
             steps {
                 echo 'Building...'
                 script {
@@ -47,6 +49,9 @@ pipeline {
         }
 
         stage('Image Push') {
+            // Adding condition depend on application version for continue
+            when { APP_VER.endsWith("-SNAPSHOT") == false }
+
             steps {
                 echo 'Pushing image...'
                 script {
