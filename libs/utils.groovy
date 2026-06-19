@@ -55,11 +55,22 @@ void imageBuild() {
 void _updateApplicationVersion(){ 
     // I preffer to add agent's public key to github if the agent not ephemeral
     incrementVersion()
-    // git config user.name "Jenkins Build Bot"
-    // git config user.email "jenkins@local"
-    // git add pom.xml
-    // git commit -m "Updating app version to -SNAPSHOT with next minor"
-    // git push
+    
+    
+    sh """
+        git config user.name "Jenkins Build Bot"
+        git config user.email "jenkins@local"
+        git add pom.xml
+        git commit -m "Updating app version to -SNAPSHOT with next minor( ${env.APP_VER} => ${getProjectVersion()})"
+    """
+    
+    withCredentials([string(credentialsId:'github_PAT', variable: 'GITHUB_TOKEN')]){
+        String gitUrlNoProtocol = sh(script:''' echo $GIT_URL|awk -F'//' '{print $2}' ''', returnStdout: true).trim()
+        sh ''' 
+            git push https://${GITHUB_TOKEN}@$gitUrlNoProtocol HEAD:main
+
+        '''
+    }
 }
 
 
