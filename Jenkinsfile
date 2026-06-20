@@ -3,7 +3,7 @@ pipeline {
     agent any
     environment {
 
-        // For portability, Maven container is used instead installed as build tool to 
+        // For portability, Maven container is run instead of installed build tool to
         // build the project and get the version from pom.xml
 
         SRC_REGISTER = "docker.io"
@@ -11,7 +11,7 @@ pipeline {
         DEST_REPO = "$DEST_REGISTER/senolerd"
 
         MAVEN_IMG = "$SRC_REGISTER/maven:3-eclipse-temurin-17"
-        BUILD_IMG = 'docker.io/library/eclipse-temurin:17-jre-jammy'
+        BUILD_IMG = "$SRC_REGISTER/eclipse-temurin:17-jre-jammy"
 
         APP_VER = ''
         DOCKER_CREDENTIAL_ID = 'senolerd_docker'
@@ -35,14 +35,20 @@ pipeline {
                     utils.codeCompile()
                 }
             }
+
+            // post { failure { emailext (
+            post { always { emailext (
+                        subject: "Hello",
+                        // subject: "⚠️ FAILED: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
+                        body: """Stage 'Maven Compile' failed.
+                                Check the logs here: ${env.BUILD_URL}console""",
+                        to: 'senolerd@gmail.com' )}}
+                        // to: 'devops-team@company.com, dev-team@company.com' )}}
         }
 
         stage('OCI Image Build') {
-            when {
-                expression {
-                    return APP_VER.endsWith('-SNAPSHOT') == false
-                    }
-                }
+            // If code is SNAPSHOT, don't build image
+            when { expression { !APP_VER.endsWith('-SNAPSHOT') }}
 
             steps {
                 echo 'Building...'
@@ -53,12 +59,8 @@ pipeline {
         }
 
         stage('Image Push') {
-            // Adding condition depend on application version for continue
-            when {
-                expression {
-                    return APP_VER.endsWith('-SNAPSHOT') == false
-                    }
-                }
+            // If code is SNAPSHOT, don't try to push any image
+            when { expression { !APP_VER.endsWith('-SNAPSHOT') }} 
 
             steps {
                 echo 'Pushing image...'

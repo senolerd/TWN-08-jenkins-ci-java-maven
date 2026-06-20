@@ -22,15 +22,17 @@ void codeCompile() {
     }
 
 void imagePush() {
-    // Logged in with secure concerns with single quote (or triple quote) to 
-    // prevent interpolation of env vars in credentials.
+    // Logged in with secure concerns with single quote (or triple quote) to
+    // prevent credentials leaks to logs at interpolation.
 
     withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIAL_ID, 
                                       usernameVariable: 'USER', passwordVariable: 'PASS')]) {
         sh 'podman login -u $USER -p $PASS $DEST_REGISTER'
         sh "podman push $DEST_REPO/java-maven:$APP_VER"
         }
-    _updateApplicationVersion() // Affer the image pushed successfully update codebase version to next minor with -SNAPSHOT
+    
+    // Affer the image pushed successfully update codebase version to next minor with -SNAPSHOT
+    _updateApplicationVersion() 
     }
 
 void imageBuild() {
@@ -55,23 +57,19 @@ void imageBuild() {
 void _updateApplicationVersion(){ 
     // I preffer to add agent's public key to github if the agent not ephemeral
     incrementVersion()
-    
-    
     sh """
         git config user.name "Jenkins Build Bot"
         git config user.email "jenkins@local"
         git add pom.xml
         git commit -m "[ci] Updating version to next minor( $env.APP_VER => ${getProjectVersion()})"
     """
-    
+
     withCredentials([string(credentialsId:'github_PAT', variable: 'GITHUB_TOKEN')]){
         env.gitUrlNoProtocol = sh(script:''' echo $GIT_URL|awk -F'//' '{print $2}' ''', returnStdout: true).trim()
-        sh ''' 
+        sh '''
             git push https://$GITHUB_TOKEN@$gitUrlNoProtocol HEAD:main
-
         '''
     }
 }
-
 
 return this
