@@ -61,7 +61,7 @@ void _updateApplicationVersion(){
         git config user.name "Jenkins Build Bot"
         git config user.email "jenkins@local"
         git add pom.xml
-        git commit -m "Updating app version to -SNAPSHOT with next minor( ${env.APP_VER} => ${getProjectVersion()})"
+        git commit -m "[ci] Updating version to next minor( $env.APP_VER => ${getProjectVersion()})"
     """
     
     withCredentials([string(credentialsId:'github_PAT', variable: 'GITHUB_TOKEN')]){
