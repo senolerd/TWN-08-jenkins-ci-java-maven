@@ -38,8 +38,7 @@ pipeline {
 
             // post { failure { emailext (
             post { always { emailext (
-                        subject: "Hello",
-                        // subject: "⚠️ FAILED: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
+                        subject: "⚠️ FAILED: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
                         body: """Stage 'Maven Compile' failed.
                                 Check the logs here: ${env.BUILD_URL}console""",
                         to: 'senolerd@gmail.com' )}}
