@@ -20,6 +20,8 @@ pipeline {
         stage('__init__') {
             steps {
                 echo 'Initialing...'
+            }
+            script {
                 __init__()
                 hello('World')
             }
