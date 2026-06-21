@@ -1,3 +1,3 @@
-void call(String name){
+def call(String name){
     echo "Hello, ${name}!"
 }
