@@ -41,7 +41,7 @@ pipeline {
 
         stage('OCI Image Build') {
             // If code is SNAPSHOT, don't build image
-            when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
+            // when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
 
             steps {
                 echo 'Building...'
