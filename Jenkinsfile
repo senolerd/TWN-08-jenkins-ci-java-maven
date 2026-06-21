@@ -24,7 +24,7 @@ pipeline {
             steps {
                 echo 'Initialing...'
                 script {
-                    utils = load 'shared-lib/src/utils.groovy'
+                    utils = load 'twn-08-shared-lib/src/utils.groovy'
                     utils.__init__()
                     hello('World')
 
