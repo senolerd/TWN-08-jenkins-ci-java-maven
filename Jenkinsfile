@@ -1,6 +1,6 @@
 @Library('twn-08-shared-lib') _
 
-def utils
+// def utils
 pipeline {
     agent any
     environment {
@@ -20,50 +20,50 @@ pipeline {
             steps {
                 echo 'Initialing...'
                 script {
-                    utils = load 'twn-08-shared-lib/src/utils.groovy'
-                    utils.__init__()
+                    // utils = load 'twn-08-shared-lib/src/utils.groovy'
+                    // utils.__init__()
                 }
                 hello('World')
             }
         }
 
-        stage('Maven Compile') {
-            steps {
-                echo 'Compiling...'
-                script {
-                    utils.codeCompile()
-                }
-            }
+        // stage('Maven Compile') {
+        //     steps {
+        //         echo 'Compiling...'
+        //         script {
+        //             utils.codeCompile()
+        //         }
+        //     }
 
         // post { failure { emailext (
         //             subject: "⚠️ FAILED: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
         //             body: """Stage 'Maven Compile' failed.
         //                     Check the logs here: ${env.BUILD_URL}console""",
         //             to: 'devops-team@company.com, dev-team@company.com' )}}
-        }
+        // }
 
-        stage('OCI Image Build') {
-            // If code is SNAPSHOT, don't build image
-            when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
+        // stage('OCI Image Build') {
+        //     // If code is SNAPSHOT, don't build image
+        //     when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
 
-            steps {
-                echo 'Building...'
-                script {
-                    utils.imageBuild()
-                }
-            }
-        }
+        //     steps {
+        //         echo 'Building...'
+        //         script {
+        //             utils.imageBuild()
+        //         }
+        //     }
+        // }
 
-        stage('Image Push') {
-            // If code is SNAPSHOT, don't try to push any image
-            when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
+        // stage('Image Push') {
+        //     // If code is SNAPSHOT, don't try to push any image
+        //     when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
 
-            steps {
-                echo 'Pushing image...'
-                script {
-                    utils.imagePush()
-                }
-            }
-        }
+        //     steps {
+        //         echo 'Pushing image...'
+        //         script {
+        //             utils.imagePush()
+        //         }
+        //     }
+        // }
     }
 }
