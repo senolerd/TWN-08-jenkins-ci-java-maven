@@ -12,7 +12,6 @@ pipeline {
         DEST_REPO = "$DEST_REGISTER/senolerd"
         MAVEN_IMG = "$SRC_REGISTER/maven:3-eclipse-temurin-17"
         BUILD_IMG = "$SRC_REGISTER/eclipse-temurin:17-jre-jammy"
-        APP_VER = 'n/a'
         DOCKER_CREDENTIAL_ID = 'senolerd_docker'
     }
 
