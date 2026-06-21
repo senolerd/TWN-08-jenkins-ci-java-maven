@@ -1,12 +1,20 @@
-@Library('jenkins-shared-lib') _
+// Mobility wise
+def _ = library(
+    identifier: 'jenkins-shared-lib@main',
+    retriever: modernSCM([
+        $class: 'GitSCMSource',
+        remote: 'https://github.com/senolerd/jenkins-shared-library.git',
+        credentialsId: 'git_PAT_USER_PASS'
+    ])
+)
+// Setteled server wise
+// @Library('jenkins-shared-lib') _
 
 
 // def utils
 pipeline {
     agent any
     environment {
-        // For portability, Maven container is run instead of installed build tool to
-        // build the project and get the version from pom.xml
         SRC_REGISTER = 'docker.io'
         DEST_REGISTER = 'docker.io'
         DEST_REPO = "$DEST_REGISTER/senolerd"
