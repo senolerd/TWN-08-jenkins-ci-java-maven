@@ -1,17 +1,5 @@
-// Mobility wise
-def _ = library(
-    identifier: 'jenkins-shared-lib@main',
-    retriever: modernSCM([
-        $class: 'GitSCMSource',
-        remote: 'https://github.com/senolerd/jenkins-shared-library.git',
-        credentialsId: 'git_PAT_USER_PASS'
-    ])
-)
-// Setteled server wise
-// @Library('jenkins-shared-lib') _
+@Library('jenkins-shared-lib') _
 
-
-// def utils
 pipeline {
     agent any
     environment {
