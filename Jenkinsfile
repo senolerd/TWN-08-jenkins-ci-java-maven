@@ -41,7 +41,7 @@ pipeline {
 
         stage('OCI Image Build') {
             // If code is SNAPSHOT, don't build image
-            // when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
+            when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
 
             steps {
                 echo 'Building...'
@@ -51,13 +51,12 @@ pipeline {
 
         stage('Image Push') {
             // If code is SNAPSHOT, don't try to push any image
-            // when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
+            when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
 
             steps {
                 echo 'Pushing image...'
-                // script {
                 imagePush()
-                // }
+
             }
         }
     }
