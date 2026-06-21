@@ -13,7 +13,8 @@ pipeline {
         MAVEN_IMG = "$SRC_REGISTER/maven:3-eclipse-temurin-17"
         BUILD_IMG = "$SRC_REGISTER/eclipse-temurin:17-jre-jammy"
         DOCKER_CREDENTIAL_ID = 'senolerd_docker'
-    }
+        //APP_VER = "" // will be dynamic. 
+     }
 
     stages {
         stage('__init__') {
@@ -29,9 +30,8 @@ pipeline {
         stage('Maven Compile') {
             steps {
                 echo 'Compiling...'
-                script {
-                    codeCompile()
-                }
+                mavenCleanPackage()
+   
             }
 
             post { failure { emailext (
