@@ -1,4 +1,4 @@
-@Library('TWN-08-jenkins-ci-java-maven@main') _
+@Library('twn-08-shared-lib') _
 
 def utils
 pipeline {
