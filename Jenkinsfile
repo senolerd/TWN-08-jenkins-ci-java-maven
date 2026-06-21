@@ -28,9 +28,7 @@ pipeline {
         stage('Maven Compile') {
             steps {
                 echo 'Compiling...'
-                // script {
-                    mavenCleanPackage()
-                // }
+                mavenCleanPackage()
             }
 
             post { failure { emailext (
@@ -41,17 +39,17 @@ pipeline {
             }
         }
 
-        // stage('OCI Image Build') {
-        //     // If code is SNAPSHOT, don't build image
-        //     when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
+        stage('OCI Image Build') {
+            // If code is SNAPSHOT, don't build image
+            when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
 
-        //     steps {
-        //         echo 'Building...'
-        //         script {
-        //             utils.imageBuild()
-        //         }
-        //     }
-        // }
+            steps {
+                echo 'Building...'
+                script {
+                    utils.imageBuild()
+                }
+            }
+        }
 
         // stage('Image Push') {
         //     // If code is SNAPSHOT, don't try to push any image
