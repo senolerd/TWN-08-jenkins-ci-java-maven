@@ -20,17 +20,17 @@ pipeline {
         stage('__init__') {
             steps {
                 echo 'Initialing...'
-
                 __init__()
                 hello('World')
-
             }
         }
 
         stage('Maven Compile') {
             steps {
                 echo 'Compiling...'
-                mavenCleanPackage()
+                script {
+                    mavenCleanPackage()
+                }
    
             }
 
