@@ -24,6 +24,7 @@ pipeline {
                 //     utils = load 'twn-08-shared-lib/src/utils.groovy'
                 //     utils.__init__()
                 // }
+                __init__()
                 hello('World')
             }
         }
