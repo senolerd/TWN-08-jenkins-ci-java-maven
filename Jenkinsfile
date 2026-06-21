@@ -28,9 +28,9 @@ pipeline {
         stage('Maven Compile') {
             steps {
                 echo 'Compiling...'
-                script {
+                // script {
                     mavenCleanPackage()
-                }
+                // }
             }
 
             post { failure { emailext (
