@@ -1,3 +1,5 @@
+@Library('TWN-08-jenkins-ci-java-maven') _
+
 def utils
 pipeline {
     agent any
@@ -22,8 +24,10 @@ pipeline {
             steps {
                 echo 'Initialing...'
                 script {
-                    utils = load 'libs/utils.groovy'
+                    utils = load 'shared-lib/src/utils.groovy'
                     utils.__init__()
+                    hello('World')
+
                 }
             }
         }
