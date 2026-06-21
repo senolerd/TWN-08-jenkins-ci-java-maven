@@ -45,22 +45,20 @@ pipeline {
 
             steps {
                 echo 'Building...'
-                // script {
-                    imageBuild()
-                // }
+                imageBuild()
             }
         }
 
-        // stage('Image Push') {
-        //     // If code is SNAPSHOT, don't try to push any image
-        //     when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
+        stage('Image Push') {
+            // If code is SNAPSHOT, don't try to push any image
+            // when { expression { !APP_VER.endsWith('-SNAPSHOT') } }
 
-        //     steps {
-        //         echo 'Pushing image...'
-        //         script {
-        //             utils.imagePush()
-        //         }
-        //     }
-        // }
+            steps {
+                echo 'Pushing image...'
+                // script {
+                imagePush()
+                // }
+            }
+        }
     }
 }
