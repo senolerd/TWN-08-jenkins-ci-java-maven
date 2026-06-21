@@ -1,4 +1,4 @@
-@Library('twn-08-shared-lib') _
+@Library('twn-08-shared-lib@main') _
 
 def utils
 pipeline {
