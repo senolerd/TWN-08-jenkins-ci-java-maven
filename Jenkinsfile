@@ -31,7 +31,6 @@ pipeline {
                 script {
                     mavenCleanPackage()
                 }
-   
             }
 
             post { failure { emailext (
