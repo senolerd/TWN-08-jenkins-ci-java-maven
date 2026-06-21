@@ -45,9 +45,9 @@ pipeline {
 
             steps {
                 echo 'Building...'
-                script {
-                    utils.imageBuild()
-                }
+                // script {
+                    imageBuild()
+                // }
             }
         }
 
